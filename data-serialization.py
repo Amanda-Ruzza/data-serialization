@@ -3,7 +3,14 @@ import logging
 import sys, getopt
 import datetime 
 
-logger = logging.Logger(__name__)
+# set the logger
+
+logging.basicConfig(filename="data-serialization.log", 
+					format='%(levelname)s:%(name)s:%(message)s', 
+					filemode='w')
+logger = logging.getLogger(__name__)
+logger.root.setLevel('DEBUG')
+
 
 # ADD THE COLUMN FOR THE TIMESTAMP CONVERSION, AND ATTACH IT TO THE MAIN ARGV FUNCTION
 # ADD THE COLUMN FOR THE PRODUCT NAME PROCESSING WITH THE QUANTITY SOLD + TOTAL SALES AMMOUNT FUNCTION AND ATTACH IT TO THE MAIN ARGV FUNCTION
@@ -28,10 +35,15 @@ def main(argv):
        elif opt in ("-c", "--column"):
            columnnames = arg.split(',')
 
-    logger.info('Input file is: ', inputfile)
+    logger.info('Input file is: ' + str(inputfile))
     parse_file(inputfile, outputfile, columnnames)
-    logger.info('Output file is: ', outputfile)
+    logger.info('Output file is: ' + str(outputfile))
 
+def product_organizer():
+# extracts the information from the column 'Product Name' and organizes all the quantity and prices from 
+# 'ProdA, ProdB, ProdC and ProdD' 
+    pass
+    
 ### Add the date time function here
 def timestamp_converter():
     pass
@@ -43,9 +55,11 @@ def last_sale_writer():
     pass
 
 def total_quantity_sold():
+    
     pass 
     
 def total_sales_amount():
+# extract the quantity and price for 
     pass
             
 # Main function that parses the file:
@@ -57,12 +71,12 @@ def parse_file(input_file_name, output_file_name, columns_to_parse):
             fieldnames = next(csv_reader)
             csv_writer = csv.DictWriter(new_file, fieldnames=fieldnames, extrasaction='ignore', delimiter='\t')
             csv_writer.writeheader() # writes the header from the original CSV into the new one
-
-            # for line in csv_reader:
+            # logger.info('Header written to: ' + str(outputfile))
+            for line in csv_reader:
             #     for column in columns_to_parse:
             #         line[column] = timestamp_converter(line[column])
                     
-            #     csv_writer.writerow(line)
+                csv_writer.writerow(line)
 
 
 if __name__ == "__main__":
