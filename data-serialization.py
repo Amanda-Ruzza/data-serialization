@@ -2,6 +2,7 @@ import csv
 import logging
 import sys, getopt
 import datetime 
+import hashlib
 
 # set the logger
 
@@ -39,6 +40,12 @@ def main(argv):
     parse_file(inputfile, outputfile, columnnames)
     logger.info('Output file is: ' + str(outputfile))
 
+# testing this with the hashing function. Delete this once things are working
+HASH_SALT = "keij3ka2Hie2lilie1aiwab5oaQuooth"
+
+def hash_field(field: str) -> str:
+    salted_value = "{}{}".format(field, HASH_SALT)
+    return str(hashlib.sha1(salted_value.encode("utf-8")).hexdigest())[:12]    
 def product_organizer():
 # extracts the information from the column 'Product Name' and organizes all the quantity and prices from 
 # 'ProdA, ProdB, ProdC and ProdD' 
@@ -70,13 +77,16 @@ def parse_file(input_file_name, output_file_name, columns_to_parse):
             
             fieldnames = next(csv_reader)
             csv_writer = csv.DictWriter(new_file, fieldnames=fieldnames, extrasaction='ignore', delimiter='\t')
-            csv_writer.writeheader() # writes the header from the original CSV into the new one
+            # csv_writer.writeheader() # writes the header from the original CSV into the new one
             # logger.info('Header written to: ' + str(outputfile))
-            for line in csv_reader:
-            #     for column in columns_to_parse:
-            #         line[column] = timestamp_converter(line[column])
+            fieldnames = ["Product Name", "First Sale", "Last Sale", "Total Quantity Sold", "Total Sales Amount"]        
+            csv_writer.writeheader()
+            # csv_writer.writerow({"Product Name": "Blue Car", "First Sale": "12-23-1987", "Last Sale": "06-17-2019", "Total Quantity Sold": "4", "Total Sales Amount": "25"} )
+        for line in csv_reader:
+            for column in columns_to_parse:
+                    line[column] = hash_field(line[column])
                     
-                csv_writer.writerow(line)
+                    csv_writer.writerow(line)
 
 
 if __name__ == "__main__":
