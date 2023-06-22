@@ -1,43 +1,42 @@
 import csv
 
-infile_columns = []
 def parse_csv_to_psv():
     with open ('sales.csv', 'r') as infile:
-        csv_reader = csv.reader(infile, delimiter= '\t')
-         
-        rows = []
+        csv_reader = csv.reader(infile)
+        next(csv_reader)
+        sales_report = {}
         for row in csv_reader:
-            rows.append(row) 
-            print(rows)   
-            print(f"This CSV has {len(rows)} rows")
-        product_a = list(map(lambda t: 'Product A'  not in t, rows))
-        # product_a = [a for a in rows if "Product A" in a]
-        print(product_a.count(True))
-        filtered_rows = []
-        for product_a in rows:
-            split_product_a = product_a.split('Product A')
-            if "Product A" in split_product_a:
-                filtered_rows.append(",".join(split_product_a))
+            product_name = row[1]
+            if product_name in sales_report: 
+               #PROCESS THE TIME STAMPS HERE 
+            # sales_report[product_name]["First Sale"] = row[0] 
+            # sales_report[product_name]["Last Sale"] = row[0]  
+                sales_report[product_name]["Total Quantity Sold"] += int(row[2]) 
+                sales_report[product_name]["Total Sales Amount"] += float(row[3]) # round this float 
             else:
-                split_product_a.clear()
-        print(filtered_rows)
+                  
+                sales_report[product_name] = {
+                    "First Sale": row[0],
+                    "Last Sale": row[0],
+                    "Total Quantity Sold": int(row[2]), 
+                    "Total Sales Amount": float(row[3])
+                }
+        
+        print(f"This is the master Sales Report Dictionary:\n{sales_report}\n")
+ 
 
-
-        product_b = []
-        product_c = []
-        product_d = []  
-
-
-
-        with open ('practice-writing.psv', 'w', newline= '', encoding='utf-8') as outfile:
+        with open ('practice-writing.psv', 'w') as outfile:
             header_names = ["Product Name", "First Sale", "Last Sale", "Total Quantity Sold", "Total Sales Amount"]
 
-            # csv_writer = csv.writer(outfile, fieldnames=header_names, extrasaction='ignore', delimiter="|")
+            csv_writer = csv.writer(outfile, delimiter="|")
             
-            # csv_writer.writerow(timestamp)
-            # csv_writer.writerow({"Product Name": "Blue Car", "First Sale": "12-23-1987", "Last Sale": "06-17-2019", "Total Quantity Sold": "4", "Total Sales Amount": "25"} )
-            # for line in csv_reader:
-            #     for column in csv_reader:
-            #         line[column] = outfile(line, column)
-                    
+            csv_writer.writerow(header_names)
+            
+            for product in sales_report.keys():
+                csv_writer.writerow([product, sales_report[product].get("First Sale"),
+                                     sales_report[product].get("Last Sale"),
+                                     sales_report[product].get("Total Quantity Sold"), 
+                                     sales_report[product].get("Total Sales Amount")])
+                                    
+                                    
 parse_csv_to_psv()
