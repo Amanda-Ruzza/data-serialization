@@ -11,16 +11,16 @@ def parse_csv_to_psv():
             product_name = row[1]
             if product_name in sales_report: 
                #PROCESS THE TIME STAMPS HERE 
-                sales_report[product_name]["First Sale"] = int(row[0]) 
-                sales_report[product_name]["Last Sale"] = int(row[0])  
+                sales_report[product_name]["First Sale"] = datetime.fromtimestamp(int(row[0]))
+                sales_report[product_name]["Last Sale"] = datetime.fromtimestamp(int(row[0]))  
                 sales_report[product_name]["Total Quantity Sold"] += int(row[2]) 
                 sales_report[product_name]["Total Sales Amount"] += Decimal(row[3])
                 
             else:
                   
                 sales_report[product_name] = {
-                    "First Sale": int(row[0]),
-                    "Last Sale": int(row[0]),
+                    "First Sale": datetime.fromtimestamp(int(row[0])),
+                    "Last Sale": datetime.fromtimestamp(int(row[0])),
                     "Total Quantity Sold": int(row[2]), 
                     "Total Sales Amount": Decimal(row[3])
                 }
@@ -28,7 +28,7 @@ def parse_csv_to_psv():
         print(f"This is the master Sales Report Dictionary:\n{sales_report}\n")
         
 
-        with open ('practice-writing.psv', 'w') as outfile:
+        with open ('sales_report.psv', 'w') as outfile:
             header_names = ["Product Name", "First Sale", "Last Sale", "Total Quantity Sold", "Total Sales Amount"]
 
             csv_writer = csv.writer(outfile, delimiter="|")
