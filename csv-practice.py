@@ -1,6 +1,16 @@
 import csv
+import logging
+import sys, getopt
 from decimal import Decimal
 from datetime import datetime 
+
+# Setting up a  logger
+
+logging.basicConfig(filename="data-serialization.log", 
+					format='%(levelname)s:%(name)s:%(message)s', 
+					filemode='w')
+logger = logging.getLogger(__name__)
+logger.root.setLevel('DEBUG')
 
 def parse_csv_to_psv():
     with open ('sales.csv', 'r') as infile:
@@ -10,7 +20,6 @@ def parse_csv_to_psv():
         for row in csv_reader:
             product_name = row[1]
             if product_name in sales_report: 
-               #PROCESS THE TIME STAMPS HERE 
                 sales_report[product_name]["First Sale"] = datetime.fromtimestamp(int(row[0]))
                 sales_report[product_name]["Last Sale"] = datetime.fromtimestamp(int(row[0]))  
                 sales_report[product_name]["Total Quantity Sold"] += int(row[2]) 
@@ -24,9 +33,9 @@ def parse_csv_to_psv():
                     "Total Quantity Sold": int(row[2]), 
                     "Total Sales Amount": Decimal(row[3])
                 }
-        print(sales_report.values())
-        print(f"This is the master Sales Report Dictionary:\n{sales_report}\n")
         
+        logger.info(f"Processed the raw data and added to the 'Sales Report Dictionary': \n{sales_report}" )        
+
 
         with open ('sales_report.psv', 'w') as outfile:
             header_names = ["Product Name", "First Sale", "Last Sale", "Total Quantity Sold", "Total Sales Amount"]
@@ -40,6 +49,7 @@ def parse_csv_to_psv():
                                      sales_report[product].get("Last Sale"),
                                      sales_report[product].get("Total Quantity Sold"), 
                                      sales_report[product].get("Total Sales Amount")])
+        logger.info(f"\nWrote the processed data to the new file: \n{'sales_report.psv'}" )        
                                     
                                     
 parse_csv_to_psv()
