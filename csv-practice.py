@@ -51,5 +51,6 @@ def parse_csv_to_psv():
                                      sales_report[product].get("Total Sales Amount")])
         logger.info(f"\nWrote the processed data to the new file: \n{'sales_report.psv'}" )        
                                     
-                                    
+                                   
 parse_csv_to_psv()
+
