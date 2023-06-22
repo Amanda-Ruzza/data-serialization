@@ -1,5 +1,6 @@
 import csv
 from decimal import Decimal
+from datetime import datetime 
 
 def parse_csv_to_psv():
     with open ('sales.csv', 'r') as infile:
@@ -10,16 +11,16 @@ def parse_csv_to_psv():
             product_name = row[1]
             if product_name in sales_report: 
                #PROCESS THE TIME STAMPS HERE 
-            # sales_report[product_name]["First Sale"] = row[0] 
-            # sales_report[product_name]["Last Sale"] = row[0]  
+                sales_report[product_name]["First Sale"] = int(row[0]) 
+                sales_report[product_name]["Last Sale"] = int(row[0])  
                 sales_report[product_name]["Total Quantity Sold"] += int(row[2]) 
                 sales_report[product_name]["Total Sales Amount"] += Decimal(row[3])
                 
             else:
                   
                 sales_report[product_name] = {
-                    "First Sale": row[0],
-                    "Last Sale": row[0],
+                    "First Sale": int(row[0]),
+                    "Last Sale": int(row[0]),
                     "Total Quantity Sold": int(row[2]), 
                     "Total Sales Amount": Decimal(row[3])
                 }
