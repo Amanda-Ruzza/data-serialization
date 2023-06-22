@@ -1,4 +1,5 @@
 import csv
+from decimal import Decimal
 
 def parse_csv_to_psv():
     with open ('sales.csv', 'r') as infile:
@@ -12,18 +13,19 @@ def parse_csv_to_psv():
             # sales_report[product_name]["First Sale"] = row[0] 
             # sales_report[product_name]["Last Sale"] = row[0]  
                 sales_report[product_name]["Total Quantity Sold"] += int(row[2]) 
-                sales_report[product_name]["Total Sales Amount"] += float(row[3]) # round this float 
+                sales_report[product_name]["Total Sales Amount"] += Decimal(row[3])
+                
             else:
                   
                 sales_report[product_name] = {
                     "First Sale": row[0],
                     "Last Sale": row[0],
                     "Total Quantity Sold": int(row[2]), 
-                    "Total Sales Amount": float(row[3])
+                    "Total Sales Amount": Decimal(row[3])
                 }
-        
+        print(sales_report.values())
         print(f"This is the master Sales Report Dictionary:\n{sales_report}\n")
- 
+        
 
         with open ('practice-writing.psv', 'w') as outfile:
             header_names = ["Product Name", "First Sale", "Last Sale", "Total Quantity Sold", "Total Sales Amount"]
