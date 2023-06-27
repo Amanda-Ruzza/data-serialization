@@ -20,7 +20,7 @@ class ParseCSVToPSV(beam.DoFn):
 
 class WriteToPSV(beam.DoFn):
     def process(self, element):
-        sales_report = element
+        sales_report = dict(element)
         
         header_names = ["Product Name", "First Sale", "Last Sale", "Total Quantity Sold", "Total Sales Amount"]
         yield '|'.join(header_names)
